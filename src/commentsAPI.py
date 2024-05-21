@@ -17,7 +17,15 @@ YT = build(serviceName=service, version=version, developerKey=KEY)
 
 # TODO: Filter out initial b and HTML encoding
 
+def get_vidId(url):
+    if 'https://www.youtube.com' not in url or 'watch?v=' not in url:
+        return None
+    
+    return url[-11:]
+
+
 def get_comments(video_id):
+    topcomments = {}
     comments = {}
     threads = {}
 
@@ -48,9 +56,10 @@ def get_comments(video_id):
 
                 threads[id] = reply_ids
 
-                for id, reply in zip(reply_ids, replies):
+                for reply_id, reply in zip(reply_ids, replies):
                     if is_relevant(video_id, reply):
-                        comments[id] = format_comment(reply)
+                        comments[reply_id] = format_comment(reply)
+                        topcomments[reply_id] = id
         
         if nextPage is None: 
             break
@@ -66,7 +75,7 @@ def get_comments(video_id):
         results = response.get('items', [])
         nextPage = response.get('nextPageToken', None)
 
-    return comments, threads
+    return comments, topcomments, threads
 
 
 def is_relevant(video_id, comment):
@@ -91,13 +100,22 @@ def is_relevant(video_id, comment):
     return True
 
 
-def format_comment(comment):   
+def format_comment(comment):
+    # Filter out hyperlinks
+
     front = regex.compile('<a.*?>')
     end = regex.compile('</a>')
+
+    # Filter out user handles
+
+    user_handle = regex.compile('@@\S*')
 
     comment = regex.sub(front, '', comment)
     comment = regex.sub(end, '', comment)
     comment = html.unescape(comment)
+    
+    comment = regex.sub('<br>', '', comment)
+    comment = regex.sub(user_handle, '', comment)
     
     return comment
 
