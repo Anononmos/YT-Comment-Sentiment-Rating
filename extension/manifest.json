@@ -1,0 +1,22 @@
+{
+    "manifest_version": 3, 
+    "name": "YouTube Comment Sentiment Analysis", 
+    "description": "Computes the median negative, neutral, and positive ratings of the comments on a YouTube video.", 
+    "version": "1.0", 
+    "background": {
+        "service_worker": "background.js"
+    },
+    "permissions": [
+        "activeTab", 
+        "declarativeContent"
+    ], 
+    "action": {
+        "default_popup": "popup/index.html"
+    }, 
+    "icons": {
+        "16": "images/icon-16.png", 
+        "32": "images/icon-32.png", 
+        "48": "images/icon-48.png", 
+        "128": "images/icon-128.png"
+    }
+}

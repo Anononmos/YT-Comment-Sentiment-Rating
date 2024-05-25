@@ -5,6 +5,7 @@ import re as regex
 from emoji import emoji_count
 from dotenv import load_dotenv
 from googleapiclient.discovery import build
+from googleapiclient.errors import HttpError
 
 # Load environment variables from .env
 
@@ -15,7 +16,7 @@ version = os.environ['VERSION']
 
 YT = build(serviceName=service, version=version, developerKey=KEY)
 
-# TODO: Filter out initial b and HTML encoding
+# TODO: Add error handling for API call failure
 
 def get_vidId(url):
     if 'https://www.youtube.com' not in url or 'watch?v=' not in url:
@@ -25,9 +26,9 @@ def get_vidId(url):
 
 
 def get_comments(video_id):
-    topcomments = {}
-    comments = {}
-    threads = {}
+    topcomments = {}    # reply id with its top comment id
+    comments = {}       # comment id with its text display
+    threads = {}        # topcomment id and reply ids
 
     method = YT.commentThreads()
     request = method.list(
@@ -36,7 +37,11 @@ def get_comments(video_id):
         textFormat='html'
     )
 
-    response = request.execute()
+    try:
+        response = request.execute()
+    except HttpError as e:
+        raise e
+
     results = response.get('items', [])
     nextPage = response.get('nextPageToken', None)
     
@@ -71,9 +76,16 @@ def get_comments(video_id):
             pageToken=nextPage
         )
 
-        response = request.execute()
+        try:
+            response = request.execute()
+        except HttpError as e:
+            raise e
+
         results = response.get('items', [])
         nextPage = response.get('nextPageToken', None)
+
+        if results == []:
+            break
 
     return comments, topcomments, threads
 
