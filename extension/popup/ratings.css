@@ -1,0 +1,36 @@
+body {
+    width: max-content;
+    height: max-content;
+    font-family: 'Segoe UI';
+}
+
+p {
+    margin: 0;
+}
+
+#error-block {
+    display: none;
+}
+
+#sentiments-block {
+    width: 90%;
+    display: block;
+    font-size: 1em;
+}
+
+#sentiments-block progress {
+    width: 50%; 
+    text-align: left; 
+    color: black;
+}
+
+#sentiments-block ul {
+    padding: 0;
+    list-style-type: none;
+}
+
+#sentiments-block li {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}

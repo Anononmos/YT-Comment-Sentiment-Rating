@@ -1,14 +1,18 @@
 from commentsAPI import get_comments
 from model import median_sentiment
 from flask import Flask
+from flask_cors import CORS, cross_origin
 from googleapiclient.errors import HttpError
 import json
 
 app = Flask(__name__)
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 # TODO: Add error handling for API call failure
 
 @app.route('/<video_id>')
+@cross_origin()
 def get_sentiment(video_id):
     
     try: 
@@ -29,7 +33,7 @@ def get_sentiment(video_id):
         return {
             'status': 404, 
             'reason': 'commentsUnavailable', 
-            'message': f'No comments have been posted on video: {video_id}.'
+            'message': f'Video {video_id} does not have comments posted.'
         }
 
     comments = list( comments_dict.values() )
