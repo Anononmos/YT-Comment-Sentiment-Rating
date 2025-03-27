@@ -11,7 +11,7 @@ async function getVideoId() {
 }
 
 async function getSentiment(video_id) {
-    const response = await fetch(`http://localhost:8000/${video_id}`, { mode: 'cors' })
+    const response = await fetch(`http://localhost:5000/${video_id}`, { mode: 'cors' })
     const score = await response.json()
 
     return score

@@ -56,6 +56,7 @@ def get_comments(video_id):
                 comments[id] = format_comment(comment)
 
             if reply_count > 0:
+
                 reply_ids = [reply['id'] for reply in result['replies']['comments']]
                 replies = [reply['snippet']['textDisplay'] for reply in result['replies']['comments']]
 
@@ -133,10 +134,9 @@ def format_comment(comment):
 
 
 def main():
-    comments, threads = get_comments('lZMtgcOgfEk')
+    comments, _, _ = get_comments('pzxC5Ad3Ars')
 
-    for key, value in comments.items():
-        print(f'{key}: {value}\n')
+    print(comments)
 
 if __name__ == "__main__":
     main()
